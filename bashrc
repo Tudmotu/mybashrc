@@ -123,3 +123,9 @@ complete -F _project_completion goto-project;
 alias 'lsa'='ls -la --color=auto'
 alias 'ls'='ls --color=auto'
 alias 'bashrc'='vim ~/.bash/bashrc'
+
+# Local overrides
+if [[ -e ~/.bash/bashrc.local ]]; then
+    source ~/.bash/bashrc.local
+fi
+
