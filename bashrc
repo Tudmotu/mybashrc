@@ -6,18 +6,36 @@ export EDITOR="vim";
 # If not running interactively, don't do anything
 [[ $- != *i* ]] && return
 
-hg_branch() {
+# Version Cotrol PS1 Helpers
+__hg_branch() {
     hg branch 2> /dev/null | \
-        awk '{ printf "(\033[0;31m" $1 "\033[m) " }'
+        awk '{ printf "(hg::\033[0;31m" $1 "\033[m) " }'
 }
-git_branch() {
+__git_branch() {
     git branch 2> /dev/null | \
-        awk '{ printf "(\033[0;31m" $2 "\033[m) " }'
+        awk '{ printf "(git::\033[0;31m" $2 "\033[m) " }'
 }
+# SVN branch
+# Based on:  http://hocuspokus.net/2009/07/add-git-and-svn-branch-to-bash-prompt/
+__svn_branch() {
+    if [[ -d .svn ]]; then
+        SVN_PATH="$( __parse_svn_url | sed -e \
+            's#^'"$(__parse_svn_repository_root)"'##g' | \
+            awk '{print $1}' )"
+        SVN_BRANCH=$( echo $SVN_PATH | sed -e "s/.*\/branches\///" )
 
+        echo $SVN_BRANCH | awk '{print "(svn::\033[0;31m" $1 "\033[m)" }'
+    fi
+}
+__parse_svn_url() {
+    svn info 2>/dev/null | sed -ne 's#^URL: ##p'
+}
+__parse_svn_repository_root() {
+    svn info 2>/dev/null | sed -ne 's#^Repository Root: ##p'
+}
 
 #PS1='[\u@\h \W]\$ '
-PS1='$(hg_branch)$(git_branch)\e[m\@ | \[\e[0;32m\]\u\[\e[m\]@\[\e[1;34m\]\w\[\e[m\] \[\e[1;32m\]\$\[\e[m\] '
+PS1='$(__svn_branch)$(__hg_branch)$(__git_branch)\e[m\@ | \[\e[0;32m\]\u\[\e[m\]@\[\e[1;34m\]\w\[\e[m\] \[\e[1;32m\]\$\[\e[m\] '
 
 # Directory for virtual environments
 ENVS_DIR=~/virtualenvs
