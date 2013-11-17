@@ -115,11 +115,23 @@ _virtenv_completion() {
 complete -F _virtenv_completion virtenv;
 
 PROJECTS_DIR=~/MyProjects
-goto-project() {
-    PROJECT_DIR=$PROJECTS_DIR/$1
-    echo "$PROJECT_DIR";
-    ls -la "$PROJECT_DIR";
-    cd "$PROJECT_DIR";
+project() {
+    case "$1" in
+        "--create" | "-c")
+            if [[ -n $2 ]]; then
+                mkdir $PROJECTS_DIR/$2
+                echo 'Created ' $2
+                project $2
+            fi
+            ;;
+        *)
+            PROJECT_DIR=$PROJECTS_DIR/$1
+            echo "$PROJECT_DIR";
+            ls -la "$PROJECT_DIR";
+            cd "$PROJECT_DIR";
+            ;;
+
+    esac
 }
 _project_completion() {
     COMPREPLY=()
@@ -135,7 +147,7 @@ _project_completion() {
 
     COMPREPLY=( $(compgen -W "$completions" -- "$word")  )
 }
-complete -F _project_completion goto-project;
+complete -F _project_completion project;
 
 # Aliases:
 alias 'lsa'='ls -la --color=auto'
