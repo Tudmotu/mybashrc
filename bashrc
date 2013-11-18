@@ -18,13 +18,13 @@ __git_branch() {
 # SVN branch
 # Based on:  http://hocuspokus.net/2009/07/add-git-and-svn-branch-to-bash-prompt/
 __svn_branch() {
-    if [[ -d .svn ]]; then
-        SVN_PATH="$( __parse_svn_url | sed -e \
-            's#^'"$(__parse_svn_repository_root)"'##g' | \
-            awk '{print $1}' )"
-        SVN_BRANCH=$( echo $SVN_PATH | sed -e "s/.*\/branches\///" )
+    SVN_PATH="$( __parse_svn_url | sed -e \
+        's#^'"$(__parse_svn_repository_root)"'##g' | \
+        awk '{print $1}' )"
+    SVN_BRANCH=$( echo $SVN_PATH | sed -e "s/.*\/branches\///" )
 
-        echo $SVN_BRANCH | awk '{print "(svn::\033[0;31m" $1 "\033[m)" }'
+    if [[ -n $SVN_BRANCH ]]; then
+        echo ${SVN_BRANCH%/*} | awk '{print "(svn::\033[0;31m" $1 "\033[m)" }'
     fi
 }
 __parse_svn_url() {
