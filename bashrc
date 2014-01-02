@@ -77,7 +77,11 @@ virtenv() {
                         virtualenv2 $ENVS_DIR/$3;
                         ;;
                     "3")
-                        virtualenv3 $ENVS_DIR/$3;
+                        if hash pyvenv-3.3 2>/dev/null; then
+                            pyvenv-3.3 $ENVS_DIR/$3;
+                        else
+                            virtualenv3 $ENVS_DIR/$3;
+                        fi
                         ;;
                 esac
             fi
