@@ -37,27 +37,24 @@ __parse_svn_url() {
 __parse_svn_repository_root() {
     svn info 2>/dev/null | sed -ne 's#^Repository Root: ##p'
 }
-__vcs_ps1_template() {
-    echo -ne "(${CYAN}$1${WHITE}::$RED$2$RESET)"
-}
-__vcs_branches() {
+__set_prompt() {
     local git_branch=$(__git_branch)
     local hg_branch=$(__hg_branch)
     local svn_branch=$(__svn_branch)
     local prompt_line="";
 
     if [[ -n $git_branch ]]; then
-        prompt_line="$prompt_line$(__vcs_ps1_template git $git_branch)"
+        prompt_line+="(\[$CYAN\]git\[$WHITE\]::\[$RED\]$git_branch\[$RESET\])"
     fi
     if [[ -n $hg_branch ]]; then
-        prompt_line="$prompt_line$(__vcs_ps1_template hg $hg_branch)"
+        prompt_line+="(\[$CYAN\]hg\[$WHITE\]::\[$RED\]$hg_branch\[$RESET\])"
     fi
     if [[ -n $svn_branch ]]; then
-        prompt_line="$prompt_line$(__vcs_ps1_template svn $svn_branch)"
+        prompt_line+="(\[$CYAN\]svn\[$WHITE\]::\[$RED\]$svn_branch\[$RESET\])"
     fi
 
-    echo -e $prompt_line
+    export PS1="$prompt_line\[$GREEN\]|\$(date +%k:%M:%S)|\
+\[$CYAN\]\u\[$YELLOW\]@\[$BLUE\]\w \[$RESET\]\[$GREEN\]\$\[$RESET\] "
 }
 
-export PS1="\$(__vcs_branches)\[$GREEN\]|\$(date +%k:%M:%S)|\
-\[$CYAN\]\u\[$YELLOW\]@\[$BLUE\]\w \[$RESET\]\[$GREEN\]\$\[$RESET\] "
+PROMPT_COMMAND=__set_prompt
