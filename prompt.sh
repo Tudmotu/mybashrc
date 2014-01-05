@@ -41,20 +41,42 @@ __set_prompt() {
     local git_branch=$(__git_branch)
     local hg_branch=$(__hg_branch)
     local svn_branch=$(__svn_branch)
-    local prompt_line="";
+    local bra="\[$WHITE\][\[$RESET\]"
+    local ket="\[$WHITE\]]\[$RESET\]"
+    local vcs_name=""
+    local vcs_branch=""
+    local prompt_line=""
 
+    # Add virtual env
+    if [[ $VIRTUAL_ENV != "" ]]; then
+        prompt_line+="$bra\[$PURPLE\]${VIRTUAL_ENV##*/}$ket"
+    fi
+
+    # Add VCS branches
     if [[ -n $git_branch ]]; then
-        prompt_line+="(\[$CYAN\]git\[$WHITE\]::\[$RED\]$git_branch\[$RESET\])"
+        vcs_name="git"
+        vcs_branch=$(__git_branch)
+
+    elif [[ -n $hg_branch ]]; then
+        vcs_name="hg"
+        vcs_branch=$(__hg_branch)
+
+    elif [[ -n $svn_branch ]]; then
+        vcs_name="svn"
+        vcs_branch=$(__svn_branch)
     fi
-    if [[ -n $hg_branch ]]; then
-        prompt_line+="(\[$CYAN\]hg\[$WHITE\]::\[$RED\]$hg_branch\[$RESET\])"
-    fi
-    if [[ -n $svn_branch ]]; then
-        prompt_line+="(\[$CYAN\]svn\[$WHITE\]::\[$RED\]$svn_branch\[$RESET\])"
+    if [[ -n $vcs_name ]]; then
+        prompt_line+="$bra\[$CYAN\]$vcs_name\[$WHITE\]::\[$RED\]$vcs_branch\[$RESET\]$ket"
     fi
 
-    export PS1="$prompt_line\[$GREEN\]|\$(date +%k:%M:%S)|\
-\[$CYAN\]\u\[$YELLOW\]@\[$BLUE\]\w \[$RESET\]\[$GREEN\]\$\[$RESET\] "
+    # Add time
+    prompt_line+="$bra\[$GREEN\]\$(date +%k:%M:%S)\[$RESET\]$ket"
+
+    # Add user@host 
+    prompt_line+=" \[$CYAN\]\u\[$YELLOW\]@\[$BLUE\]\w\[$RESET\] "
+
+    # Export
+    export PS1="$prompt_line\[$GREEN\]\$\[$RESET\] "
 }
 
 PROMPT_COMMAND=__set_prompt
