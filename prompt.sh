@@ -16,8 +16,11 @@ __hg_branch() {
         awk '{print $1}'
 }
 __git_branch() {
-    git branch 2> /dev/null | \
-        awk '{print $2}'
+    # From StackOverflow: http://stackoverflow.com/questions/1593051/
+    branch_name="$(git symbolic-ref HEAD 2>/dev/null)" ||
+    branch_name="(unnamed branch)"     # detached HEAD
+    branch_name=${branch_name##refs/heads/}
+    echo $branch_name
 }
 # SVN branch
 # Based on:  http://hocuspokus.net/2009/07/add-git-and-svn-branch-to-bash-prompt/
