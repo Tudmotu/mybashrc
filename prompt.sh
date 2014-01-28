@@ -17,8 +17,7 @@ __hg_branch() {
 }
 __git_branch() {
     # From StackOverflow: http://stackoverflow.com/questions/1593051/
-    branch_name="$(git symbolic-ref HEAD 2>/dev/null)" ||
-    branch_name="(unnamed branch)"     # detached HEAD
+    branch_name="$(git symbolic-ref HEAD 2>/dev/null)"
     branch_name=${branch_name##refs/heads/}
     echo $branch_name
 }
