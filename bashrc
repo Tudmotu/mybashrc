@@ -2,6 +2,7 @@
 # ~/.bashrc
 #
 export EDITOR="vim";
+export TERM="xterm-256color"
 
 # If not running interactively, don't do anything
 [[ $- != *i* ]] && return
@@ -13,6 +14,7 @@ export EDITOR="vim";
 source ~/.bash/prompt.sh
 source ~/.bash/virtenv.sh
 source ~/.bash/projects.sh
+source ~/.bash/tmuxinator.sh
 source ~/.bash/aliases.sh
 
 # Local overrides
