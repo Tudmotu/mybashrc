@@ -30,7 +30,7 @@ __svn_branch() {
     SVN_BRANCH=$( echo $SVN_PATH | sed -e "s/.*\/branches\///" )
 
     if [[ -n $SVN_BRANCH ]]; then
-        echo ${SVN_BRANCH%/*} | awk '{print $1}'
+        echo ${SVN_BRANCH%%/*} | awk '{print $1}'
     fi
 }
 __parse_svn_url() {
@@ -72,10 +72,10 @@ __set_prompt() {
     fi
 
     # Add time
-    prompt_line+="$bra\[$GREEN\]\$(date +%k:%M:%S)\[$RESET\]$ket"
+    prompt_line+="$bra\[$GREEN\]\t\[$RESET\]$ket"
 
-    # Add user@host 
-    prompt_line+=" \[$CYAN\]\u\[$YELLOW\]@\[$BLUE\]\w\[$RESET\] "
+    # Add user@dir
+    prompt_line+=" \[$CYAN\]\u\[$YELLOW\]@\[$BLUE\]\W\[$RESET\] "
 
     # Export
     export PS1="$prompt_line\[$GREEN\]\$\[$RESET\] "
