@@ -16,9 +16,9 @@ source ~/.bash/virtenv.sh
 source ~/.bash/projects.sh
 source ~/.bash/tmuxinator.sh
 source ~/.bash/aliases.sh
+source ~/.bash/rvm.sh
 
 # Local overrides
 if [[ -e ~/.bash/bashrc.local ]]; then
     source ~/.bash/bashrc.local
 fi
-

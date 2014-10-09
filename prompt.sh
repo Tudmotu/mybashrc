@@ -54,6 +54,12 @@ __set_prompt() {
         prompt_line+="$bra\[$PURPLE\]${VIRTUAL_ENV##*/}$ket"
     fi
 
+    # Add RVM
+    if [[ $(rvm-prompt) != "" ]]; then
+        local rvm_prompt=$(rvm-prompt)
+        prompt_line+="$bra\[$RED\]${rvm_prompt##*@}$ket"
+    fi
+
     # Add VCS branches
     if [[ -n $git_branch ]]; then
         vcs_name="git"
@@ -75,10 +81,10 @@ __set_prompt() {
     prompt_line+="$bra\[$GREEN\]\t\[$RESET\]$ket"
 
     # Add user@dir
-    prompt_line+=" \[$CYAN\]\u\[$YELLOW\]@\[$BLUE\]\W\[$RESET\] "
+    prompt_line+="\n\[$CYAN\]\u\[$YELLOW\]@\[$BLUE\]\W\[$RESET\]"
 
     # Export
-    export PS1="$prompt_line\[$GREEN\]\$\[$RESET\] "
+    export PS1="$prompt_line \[$GREEN\]\$\[$RESET\] "
 }
 
 PROMPT_COMMAND=__set_prompt
