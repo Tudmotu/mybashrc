@@ -12,25 +12,32 @@ BOLD=$(tput bold)
 DIM=$(tput dim)
 
 __hg_branch() {
-    hg branch 2> /dev/null | \
-        awk '{print $1}'
+    hg_branch=$(hg branch 2> /dev/null | awk '{print $1}')
+    if [[ -n $hg_branch ]]; then
+        hg_root=$(basename $(hg root))
+        echo "$hg_root/$hg_branch"
+    fi
 }
 __git_branch() {
-    # From StackOverflow: http://stackoverflow.com/questions/1593051/
+    # Based on: http://stackoverflow.com/questions/1593051/
     branch_name="$(git symbolic-ref HEAD 2>/dev/null)"
     branch_name=${branch_name##refs/heads/}
-    echo $branch_name
+    if [[ -n $branch_name ]]; then
+        git_root=$(basename $(git rev-parse --show-toplevel))
+        echo "$git_root/$branch_name"
+    fi
 }
 # SVN branch
 # Based on:  http://hocuspokus.net/2009/07/add-git-and-svn-branch-to-bash-prompt/
 __svn_branch() {
+    avn_root=$(__parse_svn_repository_root)
     SVN_PATH="$( __parse_svn_url | sed -e \
-        's#^'"$(__parse_svn_repository_root)"'##g' | \
+        's#^'"$svn_root"'##g' | \
         awk '{print $1}' )"
     SVN_BRANCH=$( echo $SVN_PATH | sed -e "s/.*\/branches\///" )
 
     if [[ -n $SVN_BRANCH ]]; then
-        echo ${SVN_BRANCH%%/*} | awk '{print $1}'
+        echo "$svn_root/${SVN_BRANCH%%/*}" | awk '{print $1}'
     fi
 }
 __parse_svn_url() {
