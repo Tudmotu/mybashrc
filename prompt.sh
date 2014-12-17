@@ -80,6 +80,9 @@ __set_prompt() {
     # Add time
     prompt_line+="$bra\[$GREEN\]\t\[$RESET\]$ket"
 
+    # Add parent directory
+    prompt_line+="$bra\[$BLUE\]$(dirname $PWD)/\[$RESET\]$ket"
+
     # Add user@dir
     prompt_line+="\n\[$CYAN\]\u\[$YELLOW\]@\[$BLUE\]\W\[$RESET\]"
 
