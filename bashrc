@@ -22,3 +22,5 @@ source ~/.bash/rvm.sh
 if [[ -e ~/.bash/bashrc.local ]]; then
     source ~/.bash/bashrc.local
 fi
+
+export PATH="$PATH:$HOME/.rvm/bin" # Add RVM to PATH for scripting
