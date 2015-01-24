@@ -21,7 +21,8 @@ __hg_branch() {
 __git_branch() {
     # Based on: http://stackoverflow.com/questions/1593051/
     branch_name="$(git symbolic-ref HEAD 2>/dev/null)" ||
-    branch_name="(detached at $(git rev-parse --short HEAD))"
+    branch_name="(detached at $(git rev-parse --short HEAD 2>/dev/null))" ||
+    branch_name=""
     branch_name=${branch_name##refs/heads/}
     if [[ -n $branch_name ]]; then
         git_root=$(basename $(git rev-parse --show-toplevel))
