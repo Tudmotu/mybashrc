@@ -64,9 +64,11 @@ __set_prompt() {
     fi
 
     # Add RVM
-    if [[ $(rvm-prompt) != "" ]]; then
-        local rvm_prompt=$(rvm-prompt)
-        prompt_line+="$bra\[$RED\]${rvm_prompt##*@}$ket"
+    if hash rvm-prompt 2>/dev/null; then
+        if [[ $(rvm-prompt) != "" ]]; then
+            local rvm_prompt=$(rvm-prompt)
+            prompt_line+="$bra\[$RED\]${rvm_prompt##*@}$ket"
+        fi
     fi
 
     # Add VCS branches
