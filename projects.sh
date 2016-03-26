@@ -3,9 +3,24 @@ project() {
     case "$1" in
         "--create" | "-c")
             if [[ -n $2 ]]; then
-                mkdir $PROJECTS_DIR/$2
+                mkdir -p $PROJECTS_DIR/$2
                 echo 'Created ' $2
                 project $2
+            fi
+            ;;
+        "--git")
+            if [[ -n $2 ]]; then
+                cd $PROJECTS_DIR
+                dir_name='default'
+                if [[ -n $3 ]]; then
+                    dir_name=$3
+                else
+                    dir_name=`expr match $2 '.*\/\(.*\)\.git'`
+                fi
+                git clone $2 $dir_name
+                project $dir_name
+            else
+                echo 'You must supply a URL when creating a project from Git'
             fi
             ;;
         *)
@@ -14,7 +29,6 @@ project() {
             ls -la "$PROJECT_DIR";
             cd "$PROJECT_DIR";
             ;;
-
     esac
 }
 _project_completion() {
