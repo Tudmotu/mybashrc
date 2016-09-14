@@ -6,7 +6,7 @@ virtenv() {
     declare -A MSGS;
     MSGS["usage"]=$"Usage: $FUNCNAME [--VERB] [OPTIONS]\nActivate env: $FUNCNAME [ENV-NAME]"
     MSGS["invalid"]="Invalid arguments."
-    MSGS["-c"]="Usage: $FUNCNAME $1 <version> <env-name>"
+    MSGS["-c"]="Usage: $FUNCNAME $1 <version> [-p /path/to/python] <env-name>"
     MSGS["-r"]="Usage: $FUNCNAME $1 <env-name>"
     MSGS["no-such-env"]="No such virtualenv - "
     MSGS["-r-success"]="virtualenv '$2' deleted"
@@ -30,19 +30,46 @@ virtenv() {
             fi
             ;;
         "--create" | "-c")
-            if [[ -z $2 ]] || [[ -z $3 ]]; then
+            PYTHON_BIN=""
+            VER=$2
+            NAME=$3
+
+            if [ "$3" == "-p" ]; then
+                if [[ -z $4 ]] || [[ -z $5 ]]; then
+                    echo ${MSGS["-c"]};
+                else
+                    PYTHON_BIN=$4
+                    NAME=$5
+
+                    case "$VER" in
+                        "2")
+                            virtualenv2 -p $PYTHON_BIN $ENVS_DIR/$NAME;
+                            ;;
+                        "3")
+                            if hash pyvenv-3.3 2>/dev/null; then
+                                pyvenv-3.3 -p $PYTHON_BIN $ENVS_DIR/$NAME;
+                            else
+                                virtualenv3 -p $PYTHON_BIN $ENVS_DIR/$NAME;
+                            fi
+                            ;;
+                    esac
+                fi
+            elif [[ -z $VER ]] || [[ -z $NAME ]]; then
                 echo ${MSGS["-c"]};
             else
-                case "$2" in
+                case "$VER" in
                     "2")
-                        virtualenv2 $ENVS_DIR/$3;
+                        virtualenv2 $ENVS_DIR/$NAME;
                         ;;
                     "3")
                         if hash pyvenv-3.3 2>/dev/null; then
-                            pyvenv-3.3 $ENVS_DIR/$3;
+                            pyvenv-3.3 $ENVS_DIR/$NAME;
                         else
-                            virtualenv3 $ENVS_DIR/$3;
+                            virtualenv3 $ENVS_DIR/$NAME;
                         fi
+                        ;;
+                    *)
+                        echo ${MSGS["-c"]};
                         ;;
                 esac
             fi
