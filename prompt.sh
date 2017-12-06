@@ -7,6 +7,7 @@ BLUE=$(tput setaf 4)
 PURPLE=$(tput setaf 5)
 CYAN=$(tput setaf 6)
 WHITE=$(tput setaf 7)
+GREY=$(tput setaf 10)
 RESET=$(tput sgr0)
 BOLD=$(tput bold)
 DIM=$(tput dim)
@@ -52,8 +53,8 @@ __set_prompt() {
     local git_branch=$(__git_branch)
     local hg_branch=$(__hg_branch)
     local svn_branch=$(__svn_branch)
-    local bra="\[$WHITE\][\[$RESET\]"
-    local ket="\[$WHITE\]]\[$RESET\]"
+    local bra="\[$GREY\][\[$RESET\]"
+    local ket="\[$GREY\]]\[$RESET\]"
     local vcs_name=""
     local vcs_branch=""
     local prompt_line=""
@@ -85,7 +86,7 @@ __set_prompt() {
         vcs_branch=$(__svn_branch)
     fi
     if [[ -n $vcs_name ]]; then
-        prompt_line+="$bra\[$CYAN\]$vcs_name\[$WHITE\]::\[$RED\]$vcs_branch\[$RESET\]$ket"
+        prompt_line+="$bra\[$CYAN\]$vcs_name\[$BLACK\]::\[$RED\]$vcs_branch\[$RESET\]$ket"
     fi
 
     # Add time
